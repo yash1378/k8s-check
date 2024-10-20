@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to My Node.js App</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        header {
+            background-color: #4CAF50;
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 3rem;
+        }
+        .container {
+            padding: 40px;
+            text-align: center;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            margin: 5px;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        form {
+            margin: 20px 0;
+        }
+        input {
+            padding: 10px;
+            margin: 5px;
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to My Node.js Kubernetes App</h1>
+    </header>
+    <div class="container">
+        <h2>This is the homepage</h2>
+        <p>Navigate through the API to test different routes and services.</p>
+        <form id="userForm">
+            <input type="text" id="name" placeholder="Name" required />
+            <input type="number" id="age" placeholder="Age" required />
+            <button type="submit" class="button">Create User</button>
+        </form>
+        <h3>View or Update User</h3>
+        <form id="userUpdateForm">
+            <input type="text" id="userId" placeholder="User ID" required />
+            <input type="text" id="updateName" placeholder="New Name" required />
+            <input type="number" id="updateAge" placeholder="New Age" required />
+            <button type="submit" class="button">Update User</button>
+        </form>
+        <form id="deleteUserForm">
+            <input type="text" id="deleteUserId" placeholder="User ID to Delete" required />
+            <button type="submit" class="button">Delete User</button>
+        </form>
+        <a href="/users" class="button">View All Users</a>
+    </div>
+    <script>
+        document.getElementById('userForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const age = document.getElementById('age').value;
+
+            const response = await fetch('/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, age })
+            });
+
+            const result = await response.text();
+            alert(result);
+        };
+
+        document.getElementById('userUpdateForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('userId').value;
+            const name = document.getElementById('updateName').value;
+            const age = document.getElementById('updateAge').value;
+
+            const response = await fetch(`/users/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, age })
+            });
+
+            const result = await response.text();
+            alert(result);
+        };
+
+        document.getElementById('deleteUserForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('deleteUserId').value;
+
+            const response = await fetch(`/users/${id}`, {
+                method: 'DELETE',
+            });
+
+            const result = await response.text();
+            alert(result);
+        };
+    </script>
+</body>
+</html>

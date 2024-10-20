@@ -1,0 +1,99 @@
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: my-node-app
+#   labels:
+#     app: my-node-app
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: my-node-app
+#   template:
+#     metadata:
+#       labels:
+#         app: my-node-app
+#     spec:
+#       containers:
+#       - name: my-node-app
+#         image: warriorop/self_learning:latest
+#         ports:
+#         - containerPort: 3000
+#         env:
+#         - name: APP_NAME
+#           valueFrom:
+#             configMapKeyRef:
+#               name: my-app-config
+#               key: APP_NAME
+#         - name: POSTGRES_HOST
+#           value: "postgres"  # Matches the PostgreSQL service name
+#         - name: POSTGRES_PORT
+#           value: "5432"
+#         - name: POSTGRES_DB
+#           value: "mydb"
+#         - name: POSTGRES_USER
+#           valueFrom:
+#             secretKeyRef:
+#               name: postgres-secret
+#               key: POSTGRES_USER
+#         - name: POSTGRES_PASSWORD
+#           valueFrom:
+#             secretKeyRef:
+#               name: postgres-secret
+#               key: POSTGRES_PASSWORD
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: my-node-app-service
+# spec:
+#   selector:
+#     app: my-node-app
+#   ports:
+#     - protocol: TCP
+#       port: 3000
+#       targetPort: 3000
+#   type: NodePort  # Keep this as NodePort for Minikube or LoadBalancer for external access
+
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-app
+  labels:
+    app: nodejs-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nodejs-app
+  template:
+    metadata:
+      labels:
+        app: nodejs-app
+    spec:
+      containers:
+        - name: nodejs-app
+          image: warriorop/self_learning:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: MONGODB_URI
+              value: "mongodb://admin:password123@10.109.247.20:27017"
+            - name: MONGODB_DB
+              value: "mydatabase"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodejs-app
+spec:
+  selector:
+    app: nodejs-app
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+      nodePort: 30001  # Specify a port between 30000 and 32767
+  type: NodePort  # Set type to NodePort
